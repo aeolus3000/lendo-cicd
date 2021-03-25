@@ -49,14 +49,14 @@ When the lendo service receives a get applications request, it performs the foll
 
 If an error is encountered in any of the steps, the response contains the error message.
 
-The lendo service also subscribes on the from polling queue. When it receives an application
+The lendo service also subscribes on the "from polling" queue. When it receives an application
 from the queue, it updates the status of the application in the database.
 
 ## Lendo Polling Service
 
-The polling service receives loan applications from the lendo service through the to polling queue.
+The polling service receives loan applications from the lendo service through the "to polling" queue.
 For each application it receives it polls the banking service and checks whether the status of the 
-application has changed. If so, the application with updated status is pushed in the from polling queue.
+application has changed. If so, the application with updated status is pushed in the "from polling" queue.
 
 # Using the application
 
@@ -64,7 +64,6 @@ Prerequisites: git, docker, docker-compose and make system installed
 
 Please follow the following steps if you want to launch the application:
 
-If you want to try without documentation, go ahead. These are the simple steps:
 1. git clone https://github.com/aeolus3000/lendo-cicd.git
 2. cd lendo-cicd
 3. make start
