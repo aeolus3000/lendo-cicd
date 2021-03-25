@@ -1,0 +1,14 @@
+== Hello world
+
+@startuml
+ 
+skinparam componentStyle uml2
+ 
+file document.adoc as input
+file document.html as output
+component asciidoctorj
+ 
+input -> asciidoctorj
+asciidoctorj -> output
+ 
+@enduml
