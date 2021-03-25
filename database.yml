@@ -1,3 +1,7 @@
 ---
+development:
+  url: {{envOr "DEV_DATABASE_URL" "postgres://postgres:postgres@127.0.0.1:5432/lendo_service_development?sslmode=disable"}}
+
 production:
   url: {{envOr "DATABASE_URL" "postgres://postgres:postgres@127.0.0.1:5432/lendo_service_production?sslmode=disable"}}
+  
