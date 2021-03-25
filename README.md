@@ -27,7 +27,8 @@ When the lendo service receives a create application request, it performs the fo
 1. Validate the request
 2. Forward the request to the banking service
 3. Push the response from the banking service in the channel "to polling"
-4. Respond with the application
+4. Store the application in the database
+5. Respond with the application
 
 If an error is encountered in any of the steps, the response contains the error message.
 
@@ -48,7 +49,10 @@ When the lendo service receives a get applications request, it performs the foll
 
 If an error is encountered in any of the steps, the response contains the error message.
 
-## Polling Service
+The lendo service also subscribes on the from polling queue. When it receives an application
+from the queue, it updates the status of the application in the database.
+
+## Lendo Polling Service
 
 The polling service receives loan applications from the lendo service through the to polling queue.
 For each application it receives it polls the banking service and checks whether the status of the 
@@ -69,3 +73,14 @@ If you want to try without documentation, go ahead. These are the simple steps:
 6. play around with the UI
 7. study the rest API on http://localhost:3000/doc
 8. use some tool like postman to send rest calls against the lendo service
+
+# Open points
+
+- code reviews and quality checks especially with lendo-sdk
+- add multi purpose retrier to retry actions
+- factories for banking api und publisher/subscriber
+- arc42 documentation
+- document configuration
+- list open source software used in this project
+- security: provide oauth authentication with oidc
+- optimize log messages
