@@ -83,3 +83,4 @@ Please follow the following steps if you want to launch the application:
 - list open source software used in this project
 - security: provide oauth authentication with oidc
 - optimize log messages
+- introduce "Job" and pass it to the lendo polling service instead of an application
