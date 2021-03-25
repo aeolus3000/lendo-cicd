@@ -1,0 +1,103 @@
+version: "3"
+
+services:
+  lendopollingservice:
+    container_name: lendopollingservice
+    build: ./lendo-polling-service
+    environment:
+      POLLINGSERVICE_PUBCONF_HOST: lendorabbitmq
+      POLLINGSERVICE_PUBCONF_QUEUENAME: frompolling
+      POLLINGSERVICE_SUBCONF_HOST: lendorabbitmq
+      POLLINGSERVICE_SUBCONF_QUEUENAME: topolling
+      POLLINGSERVICE_BANKINGCONF_HOST: dnbbanking
+      POLLINGSERVICE_BANKINGCONF_PORT: 8000
+      POLLINGSERVICE_BANKINGCONF_CREATESLUG: api/applications
+      POLLINGSERVICE_BANKINGCONF_CHECKSTATUSSLUG: api/jobs
+      POLLINGSERVICE_BANKINGCONF_CHECKSTATUSPARAMETERNAME: application_id
+      POLLINGSERVICE_BANKINGCONF_CONTENTTYPE: application/json
+    depends_on:
+      - rabbitmq
+      - dnbbanking
+    networks: 
+      private: {}
+
+  lendoservice:
+    container_name: lendoservice
+    build: ./lendo-service
+    ports:
+      - 3000:3000
+    environment:
+      GO_ENV: development
+      LENDOSERVICE_PUBCONF_HOST: lendorabbitmq
+      LENDOSERVICE_PUBCONF_QUEUENAME: topolling
+      LENDOSERVICE_SUBCONF_HOST: lendorabbitmq
+      LENDOSERVICE_SUBCONF_QUEUENAME: frompolling
+      LENDOSERVICE_BANKINGCONF_HOST: dnbbanking
+      LENDOSERVICE_BANKINGCONF_PORT: 8000
+      LENDOSERVICE_BANKINGCONF_CREATESLUG: api/applications
+      LENDOSERVICE_BANKINGCONF_CHECKSTATUSSLUG: api/jobs
+      LENDOSERVICE_BANKINGCONF_CHECKSTATUSPARAMETERNAME: application_id
+      LENDOSERVICE_BANKINGCONF_CONTENTTYPE: application/json
+      WAIT_HOSTS: dbpostgres:5432, rabbitmq:5672
+      DEV_DATABASE_URL: postgres://postgres:postgres@dbpostgres:5432/lendo_service_production?sslmode=disable
+    depends_on:
+      - dbpostgres
+      - rabbitmq
+      - dnbbanking
+    networks: 
+      private: {}
+      
+  dbpostgres:
+    image: postgres:11.9
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: lendo_service_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks: 
+      private: {}
+      
+  dbadmin:
+    image: dpage/pgadmin4:4.25
+    container_name: pgadmin
+    environment:
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_DEFAULT_EMAIL: "guest@guest.de"
+      PGADMIN_DEFAULT_PASSWORD: guest
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./pgadmin/lib:/var/lib/postgresql/data
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    depends_on:
+      - dbpostgres
+    networks:
+      private: {}
+      public: {}
+      
+  rabbitmq:
+    image: rabbitmq:3.8.14-management
+    container_name: lendorabbitmq
+    hostname: lendorabbitmq
+    ports:
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    networks:
+      private: {}
+
+  dnbbanking:
+    image: lendoab/interview-service:stable
+    container_name: dnbbanking
+    ports:
+      - "8000:8000"
+    networks:
+      private: {}
+      
+networks:
+  private:
+  public:
