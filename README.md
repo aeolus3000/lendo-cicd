@@ -64,11 +64,11 @@ Prerequisites: git, docker, docker-compose and make system installed
 
 Please follow the following steps if you want to launch the application:
 
-1. git clone https://github.com/aeolus3000/lendo-cicd.git
-2. cd lendo-cicd
-3. make start
+1. type in the console: git clone https://github.com/aeolus3000/lendo-cicd.git
+2. type in the console: cd lendo-cicd
+3. type in the console: make start
 4. wait a minute until all services are up n running
-5. open http://localhost:3000
+5. open http://localhost:3000 in your browser
 6. play around with the UI
 7. study the rest API on http://localhost:3000/doc
 8. use some tool like postman to send rest calls against the lendo service
