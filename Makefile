@@ -12,8 +12,9 @@ start:
 	cd lendo-polling-service && GOOS=linux GOARCH=386 go build -o ./lendo-polling-service ./main.go
 	docker-compose up -d
 	rm -rf ./lendo-polling-service/lendo-polling-service
-	./buffalo.sh pop create -a
-	@echo ""
+	@echo "Waiting for the services"
+	sleep 45s
+	@echo "Done"
 
 stop:
 	@echo "--> Stop containers"
